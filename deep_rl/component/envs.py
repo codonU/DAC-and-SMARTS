@@ -55,6 +55,36 @@ def make_env(env_id, seed, rank, episode_life=True):
 
     return _thunk
 
+def make_env_backup(env_id, seed, rank, episode_life=True):
+    def _thunk():
+        random_seed(seed)
+        if env_id.startswith("dm"):
+            import dm_control2gym
+            _, domain, task = env_id.split('-')
+            env = dm_control2gym.make(domain_name=domain, task_name=task)
+        else:
+            env = gym.make(env_id)
+        is_atari = hasattr(gym.envs, 'atari') and isinstance(
+            env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
+        if is_atari:
+            env = make_atari(env_id)
+        env.seed(seed + rank)
+        env = OriginalReturnWrapper(env)
+        if is_atari:
+            env = wrap_deepmind(env,
+                                episode_life=episode_life,
+                                clip_rewards=False,
+                                frame_stack=False,
+                                scale=False)
+            obs_shape = env.observation_space.shape
+            if len(obs_shape) == 3:
+                env = TransposeImage(env)
+            env = FrameStack(env, 4)
+
+        return env
+
+    return _thunk
+
 
 class OriginalReturnWrapper(gym.Wrapper):
     def __init__(self, env):
