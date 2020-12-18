@@ -19,6 +19,7 @@ from ..utils import *
 
 try:
     # import roboschool
+    pass
 except ImportError:
     pass
 
