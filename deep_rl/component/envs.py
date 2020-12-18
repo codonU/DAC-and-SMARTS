@@ -25,7 +25,17 @@ except ImportError:
 
 
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
-def make_env(env_id, seed, rank, episode_life=True):
+def make_env(
+    env_id, seed, rank, episode_life=True
+    # SMARTS
+    scenarios=[scenario_path],
+    agent_specs={AGENT_ID: agent_specs},
+    # set headless to false if u want to use envision
+    headless=False,
+    visdom=False,
+    #   seed=42,
+    AGENT_ID = "AGENT-007"
+    ):
     def _thunk():
         random_seed(seed)
         if env_id.startswith("dm"):
@@ -34,6 +44,18 @@ def make_env(env_id, seed, rank, episode_life=True):
             env = dm_control2gym.make(domain_name=domain, task_name=task)
         else:
             env = gym.make(env_id)
+        
+        # SMARTS
+        if env_id.startswith("smarts"):
+            env = gym.make(
+                "smarts.env:hiway-v0",
+                scenarios=[scenario_path],
+                agent_specs={AGENT_ID: agent_spec},
+                # set headless to false if u want to use envision
+                headless=False,
+                visdom=False,
+                seed=42,
+            )
         is_atari = hasattr(gym.envs, 'atari') and isinstance(
             env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
         if is_atari:
