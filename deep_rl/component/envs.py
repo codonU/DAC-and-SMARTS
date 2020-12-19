@@ -130,7 +130,9 @@ class SMARTSWrapper(gym.Wrapper):
         reward = reward[self.agent_id]
         return obs, reward, done, info
 
-
+    def reset(self):
+        return self.env.reset()
+        
 class OriginalReturnWrapper(gym.Wrapper):
     def __init__(self, env):
         gym.Wrapper.__init__(self, env)
