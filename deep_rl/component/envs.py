@@ -50,14 +50,14 @@ def make_env(
             env_AGENT_ID = dic['AGENT_ID']
             env = gym.make(
                 env_name,
-                scenarios=[env_scenario_path],
+                scenarios=env_scenario_path,
                 agent_specs={env_AGENT_ID: env_agent_spec},
                 # set headless to false if u want to use envision
                 headless=env_headless,
                 visdom=env_visdom,
                 seed=42,
             )
-            return SMARTSWarpper(env, env_AGENT_ID)
+            return SMARTSWrapper(env, env_AGENT_ID)
 
         random_seed(seed)
         if env_id.startswith("dm"):
@@ -132,7 +132,7 @@ class SMARTSWrapper(gym.Wrapper):
 
     def reset(self):
         return self.env.reset()
-        
+
 class OriginalReturnWrapper(gym.Wrapper):
     def __init__(self, env):
         gym.Wrapper.__init__(self, env)
