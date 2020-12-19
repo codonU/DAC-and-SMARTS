@@ -666,6 +666,50 @@ def visualize_a_squared_c(**kwargs):
             pickle.dump(agent.all_options, f)
 
 
+def batch_SMARTS():
+    cf = Config()
+
+    # 直接引用默认的agent_spec
+    from starter_kit.train_example.utils.continuous_space import agent_spec
+
+    # scenario_path = Path(args.scenario).absolute()
+
+    games = [
+        {
+            'name': "smarts.env:hiway-v0",
+            'scenario_path': ['/dataset_public/simple_loop/simpleloop_a'],
+            'agent_spec': agent_spec,
+            'headless': False,
+            'visdom': False,
+            'AGENT_ID': "AGENT-007",
+        }
+    ]
+
+    params = []
+
+    for game in games:
+        for r in range(1):
+            params.append([a_squared_c_ppo_continuous, dict(game=game, run=r, tasks=False, remark='ASC-PPO', gate=nn.Tanh())])
+            params.append([a_squared_c_a2c_continuous, dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh())])
+            params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh())])
+            params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh())])
+            params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh())])
+            params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh())])
+            params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh())])
+
+            # params.append([a_squared_c_a2c_continuous,
+            #                dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh(), num_workers=4)])
+            # params.append(
+            #     [oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), num_workers=4)])
+            # params.append(
+            #     [iopg_continuous, dict(game=game, run=r, tasks=False, remark='IOPG', gate=nn.Tanh(), num_workers=4)])
+            # params.append([iopg_continuous, dict(game=game, run=r, tasks=False, remark='IOPG', gate=nn.Tanh())])
+
+    for i in range(len(params)):
+        algo, param = params[i]
+        algo(**param)
+
+
 if __name__ == '__main__':
     mkdir('log')
     mkdir('data')
@@ -673,103 +717,6 @@ if __name__ == '__main__':
     set_one_thread()
     select_device(0)
 
-    batch_mujoco()
-    batch_dm()
+    batch_SMARTS()
 
     exit()
-    # game = 'HalfCheetah-v2'
-    game = 'Walker2d-v2'
-    # game = 'Swimmer-v2'
-    # game = 'dm-walker-walk'
-    # game = 'dm-fish-upright'
-    # game = 'dm-fish-swim'
-    # game = 'dm-fish'
-    # game = 'dm-cartpole-b'
-    # game = 'dm-walker-2'
-    # game = 'dm-cheetah-run'
-    # game = 'dm-cheetah'
-    # game = 'dm-cheetah-backward'
-    # game = 'dm-fish-downleft'
-    # game = 'dm-walker-squat'
-    # game = 'dm-walker-backward'
-
-    ppo_continuous(
-        game=game,
-        # game='dm-walker',
-        tasks=True,
-        log_level=1,
-        gate=nn.ReLU(),
-        max_steps=4e3,
-    )
-
-    a_squared_c_a2c_continuous(
-        game=game,
-        learning='all',
-        log_level=1,
-        num_o=4,
-        freeze_v=False,
-        tasks=False,
-        gate=nn.Tanh(),
-    )
-
-    a_squared_c_ppo_continuous(
-        game=game,
-        learning='all',
-        log_level=1,
-        num_o=4,
-        opt_ep=5,
-        freeze_v=False,
-        tasks=True,
-        # gate=nn.Tanh(),
-        save_interval=int(1e6 / 2048) * 2048,
-    )
-
-    visualize_a_squared_c(
-        game=game,
-        learning='all',
-        log_level=1,
-        num_o=4,
-        opt_ep=5,
-        freeze_v=False,
-        tasks=True,
-    )
-
-    # ahp_ppo_continuous(
-    #     game=game,
-    #     learning='all',
-    #     log_level=1,
-    #     num_o=4,
-    #     opt_ep=10,
-    #     freeze_v=False,
-    #     tasks=False,
-    #     gate=nn.Tanh(),
-    # )
-
-    # iopg_continuous(
-    #     game=game,
-    #     log_level=1,
-    #     num_o=4,
-    #     tasks=False,
-    #     gate=nn.Tanh(),
-    #     # max_steps=4e3,
-    # )
-
-    # oc_continuous(
-    #     game=game,
-    #     log_level=1,
-    #     num_o=4,
-    #     # tasks=False,
-    #     tasks=True,
-    #     max_steps=int(4e3),
-    #     # gate=nn.Tanh(),
-    # )
-
-    # ppoc_continuous(
-    #     game=game,
-    #     log_level=1,
-    #     num_o=4,
-    #     tasks=False,
-    #     # tasks=True,
-    #     # max_steps=int(4e3),
-    #     gate=nn.Tanh(),
-    # )
