@@ -26,17 +26,39 @@ except ImportError:
 
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
 def make_env(
-    env_id, seed, rank, episode_life=True
+    env_id, seed, rank, episode_life=True,      # 原来跟在rank后面
+    # 现在的设计模式， 在env_id里面以字典包含所有变量
     # SMARTS
-    scenarios=[scenario_path],
-    agent_specs={AGENT_ID: agent_specs},
-    # set headless to false if u want to use envision
-    headless=False,
-    visdom=False,
-    #   seed=42,
-    AGENT_ID = "AGENT-007"
+    # scenario_path,
+    # agent_specs,
+    # # set headless to false if u want to use envision
+    # headless=False,
+    # visdom=False,
+    # #   seed=42,
+    # AGENT_ID = "AGENT-007",
     ):
     def _thunk():
+        
+        # SMARTS
+        if type(env_id) == dict:
+            dic = env_id
+            env_name = dic['name']
+            env_scenario_path = dic['scenario_path']
+            env_agent_spec = dic['agent_spec']
+            env_headless = dic['headless']
+            env_visdom = dic['visdom']
+            env_AGENT_ID = dic['AGENT_ID']
+            env = gym.make(
+                env_name,
+                scenarios=[env_scenario_path],
+                agent_specs={env_AGENT_ID: env_agent_spec},
+                # set headless to false if u want to use envision
+                headless=env_headless,
+                visdom=env_visdom,
+                seed=42,
+            )
+            return SMARTSWarpper(env, env_AGENT_ID)
+
         random_seed(seed)
         if env_id.startswith("dm"):
             import dm_control2gym
@@ -45,17 +67,6 @@ def make_env(
         else:
             env = gym.make(env_id)
         
-        # SMARTS
-        if env_id.startswith("smarts"):
-            env = gym.make(
-                "smarts.env:hiway-v0",
-                scenarios=[scenario_path],
-                agent_specs={AGENT_ID: agent_spec},
-                # set headless to false if u want to use envision
-                headless=False,
-                visdom=False,
-                seed=42,
-            )
         is_atari = hasattr(gym.envs, 'atari') and isinstance(
             env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
         if is_atari:
@@ -73,7 +84,7 @@ def make_env(
                 env = TransposeImage(env)
             env = FrameStack(env, 4)
 
-        return env
+        return SMARTSWrapper(env)
 
     return _thunk
 
@@ -106,6 +117,18 @@ def make_env_backup(env_id, seed, rank, episode_life=True):
         return env
 
     return _thunk
+
+
+class SMARTSWrapper(gym.Wrapper):
+    def __init__(self, env, AGENT_ID):
+        gym.Wrapper.__init__(self, env)
+        self.agent_id = AGENT_ID
+    
+    def step(self, action):
+        obs, reward, done, info = self.env.step({self.agent_id: action})
+        obs = obs[self.agent_id]
+        reward = reward[self.agent_id]
+        return obs, reward, done, info
 
 
 class OriginalReturnWrapper(gym.Wrapper):
