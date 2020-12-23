@@ -672,12 +672,13 @@ def batch_SMARTS():
     # 直接引用默认的agent_spec
     from starter_kit.train_example.utils.continuous_space import agent_spec
 
-    # scenario_path = Path(args.scenario).absolute()
+    scenario_path = './dataset_public/simple_loop/simpleloop_a'
+    scenario_path = Path(scenario_path).absolute()
 
     games = [
         {
             'name': "smarts.env:hiway-v0",
-            'scenario_path': ['/dataset_public/simple_loop/simpleloop_a'],
+            'scenario_path': [scenario_path],
             'agent_spec': agent_spec,
             'headless': False,
             'visdom': False,
