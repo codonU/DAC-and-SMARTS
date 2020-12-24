@@ -27,6 +27,7 @@ def parse_args():
 
 def main(args):
     scenario_path = Path(args.scenario).absolute()
+    print([scenario_path])
 
     AGENT_ID = "AGENT-007"
 
@@ -45,7 +46,12 @@ def main(args):
         visdom=False,
         seed=42,
     )
-
+    
+    # 环境的测试
+    print('环境的测试')
+    observations = env.reset()
+    agent_obs = observations[AGENT_ID]
+    print(dir(agent_obs))
     agent = agent_spec.build_agent()
 
     while True:
