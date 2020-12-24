@@ -23,6 +23,15 @@ try:
 except ImportError:
     pass
 
+# SMARTS continuous_space 中的ACTION_SPACE
+# ==================================================
+# Continous Action Space
+# throttle, brake, steering
+# ==================================================
+
+ACTION_SPACE = gym.spaces.Box(
+    low=np.array([0.0, 0.0, -1.0]), high=np.array([1.0, 1.0, 1.0]), dtype=np.float32
+)
 
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
 def make_env(
@@ -123,15 +132,81 @@ class SMARTSWrapper(gym.Wrapper):
     def __init__(self, env, AGENT_ID):
         gym.Wrapper.__init__(self, env)
         self.agent_id = AGENT_ID
+        obs_origin = self.env.reset()
+        # self.observation_space
+        self.observation_space = self.cal_gym_dic_dim(obs_origin)
+        self.observation_space = np.zeros(self.observation_space)
+        self.env.observation_space = self.observation_space
+        # self.action_space
+        self.action_space = ACTION_SPACE
+        self.env.action_space = ACTION_SPACE
+        # print(self.env.action_space)
     
     def step(self, action):
-        obs, reward, done, info = self.env.step({self.agent_id: action})
-        obs = obs[self.agent_id]
+        origin_obs, reward, done, info = self.env.step({self.agent_id: action})
+        # obs = obs[self.agent_id]
+        obs = self.concat_obs(origin_obs)
         reward = reward[self.agent_id]
         return obs, reward, done, info
 
     def reset(self):
         return self.env.reset()
+
+    def concat_obs(self, origin_obs):
+        """以continues中的agent——interface构建
+
+        OBSERVATION_SPACE = gym.spaces.Dict(
+            {
+                # To make car follow the waypoints
+                # distance from lane center
+                "distance_from_center": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # relative heading angle from 10 waypoints in 50 forehead waypoints
+                "heading_errors": gym.spaces.Box(low=-1.0, high=1.0, shape=(10,)),
+                # Car attributes
+                # ego speed
+                "speed": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # ego steering
+                "steering": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # To make car learn to slow down, overtake or dodge
+                # distance to the closest car in each lane
+                "lane_dist": gym.spaces.Box(low=-1e10, high=1e10, shape=(5,)),
+                # time to collide to the closest car in each lane
+                "lane_ttc": gym.spaces.Box(low=-1e10, high=1e10, shape=(5,)),
+                # ego lane closest social vehicle relative speed
+                "closest_lane_nv_rel_speed": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # distance to the closest car in possible intersection direction
+                "intersection_ttc": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # time to collide to the closest car in possible intersection direction
+                "intersection_distance": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # intersection closest social vehicle relative speed
+                "closest_its_nv_rel_speed": gym.spaces.Box(low=-1e10, high=1e10, shape=(1,)),
+                # intersection closest social vehicle relative position in vehicle heading coordinate
+                "closest_its_nv_rel_pos": gym.spaces.Box(low=-1e10, high=1e10, shape=(2,)),
+            }
+        )
+        """
+        obs_dic = origin_obs[self.agent_id]
+        obs = np.zeros(self.observation_space)
+        idx = 0
+        for key in obs_dic.keys():
+            leng = obs_dic[key].shape[0]
+            obs[idx: idx + leng] = obs_dic[key]
+            idx += leng
+        return obs
+
+    def cal_gym_dic_dim(self, origin_obs):
+        """计算gym.dic中各个变量共有多少维
+        """
+        if type(origin_obs) != dict:
+            raise "type error, cal_gym_dic_dim should get dic"
+        if len(origin_obs.keys()) == 1:
+            origin_obs = origin_obs[self.agent_id]
+        dim = 0
+        for key in origin_obs.keys():
+            # print(origin_obs[key].shape)
+            dim += origin_obs[key].shape[0]
+        return dim
+
 
 class OriginalReturnWrapper(gym.Wrapper):
     def __init__(self, env):
@@ -277,6 +352,7 @@ class Task:
         self.env = Wrapper(envs)
         self.name = name
         self.observation_space = self.env.observation_space
+        # print(self.observation_space)
         self.state_dim = int(np.prod(self.env.observation_space.shape))
 
         self.action_space = self.env.action_space
