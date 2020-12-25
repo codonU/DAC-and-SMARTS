@@ -66,7 +66,8 @@ def make_env(
                 visdom=env_visdom,
                 seed=42,
             )
-            return SMARTSWrapper(env, env_AGENT_ID)
+            env = SMARTSWrapper(env, env_AGENT_ID)
+            return env
 
         random_seed(seed)
         if env_id.startswith("dm"):
@@ -93,6 +94,7 @@ def make_env(
                 env = TransposeImage(env)
             env = FrameStack(env, 4)
 
+        return env
     return _thunk
 
 def make_env_backup(env_id, seed, rank, episode_life=True):
@@ -140,11 +142,11 @@ class SMARTSWrapper(gym.Wrapper):
         # limit_arr 是按照continuous中observation的具体限制设置的
         limit_arr = np.full((self.observation_space), 1e10)
         limit_arr[1] = 1.0      # heading_errors
-        self.observation_space = gym.space.Box(
+        self.observation_space = gym.spaces.Box(
             low=-limit_arr, high=limit_arr, dtype=np.float32
         )
         self.env.observation_space = self.observation_space
-        
+
         # self.action_space
         self.action_space = ACTION_SPACE
         self.env.action_space = ACTION_SPACE
