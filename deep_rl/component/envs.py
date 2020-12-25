@@ -93,8 +93,6 @@ def make_env(
                 env = TransposeImage(env)
             env = FrameStack(env, 4)
 
-        return SMARTSWrapper(env)
-
     return _thunk
 
 def make_env_backup(env_id, seed, rank, episode_life=True):
@@ -133,10 +131,20 @@ class SMARTSWrapper(gym.Wrapper):
         gym.Wrapper.__init__(self, env)
         self.agent_id = AGENT_ID
         obs_origin = self.env.reset()
+
         # self.observation_space
         self.observation_space = self.cal_gym_dic_dim(obs_origin)
-        self.observation_space = np.zeros(self.observation_space)
+        # self.observation_space = np.zeros(self.observation_space)
+        # numpy数组可能在后面多环境的包装中不适用
+        # 用gym原生Box试一下
+        # limit_arr 是按照continuous中observation的具体限制设置的
+        limit_arr = np.full((self.observation_space), 1e10)
+        limit_arr[1] = 1.0      # heading_errors
+        self.observation_space = gym.space.Box(
+            low=-limit_arr, high=limit_arr, dtype=np.float32
+        )
         self.env.observation_space = self.observation_space
+        
         # self.action_space
         self.action_space = ACTION_SPACE
         self.env.action_space = ACTION_SPACE
@@ -150,7 +158,8 @@ class SMARTSWrapper(gym.Wrapper):
         return obs, reward, done, info
 
     def reset(self):
-        return self.env.reset()
+        obs = self.env.reset()
+        return self.concat_obs(obs)
 
     def concat_obs(self, origin_obs):
         """以continues中的agent——interface构建
