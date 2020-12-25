@@ -10,6 +10,9 @@ from smarts.core.agent import AgentSpec
 from smarts.core.agent_interface import AgentInterface, AgentType
 from smarts.core.controllers import ActionSpaceType, DiscreteAction
 
+import warnings
+warnings.filterwarnings("ignore")
+
 
 def batch_mujoco():
     cf = Config()
@@ -247,6 +250,10 @@ def a_squared_c_ppo_continuous(**kwargs):
 
     config.task_fn = lambda: Task(config.game)
     config.eval_env = config.task_fn()
+    # task_fn 先创建了创建任务的函数
+    # 然后要先运行一下才能得到state_dim等必须的参数用于创建网络
+    # 目前的解决方法是在算法实体里不再用task_fn创建新的任务instance
+    # 而是直接在算法实体里 task = config.eval_env
 
     config.network_fn = lambda: OptionGaussianActorCriticNet(
         config.state_dim, config.action_dim,
@@ -672,16 +679,26 @@ def batch_SMARTS():
     # 直接引用默认的agent_spec
     from starter_kit.train_example.utils.continuous_space import agent_spec
 
-    scenario_path = './dataset_public/simple_loop/simpleloop_a'
-    scenario_path = Path(scenario_path).absolute()
+    scenario_path = [
+        './dataset_public/all_loop/all_loop_a'
+        # './dataset_public/intersection_loop/its_a',
+        # './dataset_public/merge_loop/merge_a',s
+        # './dataset_public/mixed_loop/its_merge_a',
+        # './dataset_public/mixed_loop/roundabout_its_a',
+        # './dataset_public/mixed_loop/roundabout_merge_a',
+        # './dataset_public/roundabout_loop/roundabout_a',
+        # './dataset_public/sharp_loop/sharploop_a',
+        # './dataset_public/simple_loop/simpleloop_a',
+    ]
+    scenario_path = [Path(path).absolute() for path in scenario_path]
 
     games = [
         {
             'name': "smarts.env:hiway-v0",
-            'scenario_path': [scenario_path],
+            'scenario_path': scenario_path,
             'agent_spec': agent_spec,
-            'headless': False,
-            'visdom': False,
+            # 'headless': False,
+            # 'visdom': False,
             'AGENT_ID': "AGENT-007",
         }
     ]

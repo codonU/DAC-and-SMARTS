@@ -54,17 +54,17 @@ def make_env(
             env_name = dic['name']
             env_scenario_path = dic['scenario_path']
             env_agent_spec = dic['agent_spec']
-            env_headless = dic['headless']
-            env_visdom = dic['visdom']
+            # env_headless = dic['headless']
+            # env_visdom = dic['visdom']
             env_AGENT_ID = dic['AGENT_ID']
             env = gym.make(
                 env_name,
                 scenarios=env_scenario_path,
                 agent_specs={env_AGENT_ID: env_agent_spec},
                 # set headless to false if u want to use envision
-                headless=env_headless,
-                visdom=env_visdom,
-                seed=42,
+                # headless=env_headless,
+                # visdom=env_visdom,
+                # seed=42,
             )
             env = SMARTSWrapper(env, env_AGENT_ID)
             return env
@@ -154,9 +154,19 @@ class SMARTSWrapper(gym.Wrapper):
     
     def step(self, action):
         origin_obs, reward, done, info = self.env.step({self.agent_id: action})
+
         # obs = obs[self.agent_id]
         obs = self.concat_obs(origin_obs)
+
         reward = reward[self.agent_id]
+
+        done = done[self.agent_id]
+        
+        info = info[self.agent_id]
+        # info在每个AGENT下的内容
+        # {'env_obs': 一些全局信息， 'goal_distance': , 'score'}
+        # 直接将info中的score改为DAC中BaseAgent需要的'episodic_return'
+        info['episodic_return'] = info.pop('score')
         return obs, reward, done, info
 
     def reset(self):
@@ -197,7 +207,7 @@ class SMARTSWrapper(gym.Wrapper):
         )
         """
         obs_dic = origin_obs[self.agent_id]
-        obs = np.zeros(self.observation_space)
+        obs = np.zeros(self.observation_space.shape[0])
         idx = 0
         for key in obs_dic.keys():
             leng = obs_dic[key].shape[0]

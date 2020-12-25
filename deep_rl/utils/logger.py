@@ -22,6 +22,7 @@ def get_logger(tag='default', log_level=0):
         # SMARTS中的game为字典，但是转为tag还是字符串
         if '{' in tag:
             tag = 'SMARTS'
+            # pass
         fh = logging.FileHandler('./log/%s-%s.txt' % (tag, get_time_str()))
         fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s'))
         fh.setLevel(logging.INFO)
