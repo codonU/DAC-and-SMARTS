@@ -680,7 +680,7 @@ def batch_SMARTS():
     from starter_kit.train_example.utils.continuous_space import agent_spec
 
     scenario_path = [
-        './dataset_public/all_loop/all_loop_a'
+        # './dataset_public/all_loop/all_loop_a'
         # './dataset_public/intersection_loop/its_a',
         # './dataset_public/merge_loop/merge_a',s
         # './dataset_public/mixed_loop/its_merge_a',
@@ -688,7 +688,7 @@ def batch_SMARTS():
         # './dataset_public/mixed_loop/roundabout_merge_a',
         # './dataset_public/roundabout_loop/roundabout_a',
         # './dataset_public/sharp_loop/sharploop_a',
-        # './dataset_public/simple_loop/simpleloop_a',
+        './dataset_public/simple_loop/simpleloop_a',
     ]
     scenario_path = [Path(path).absolute() for path in scenario_path]
 
@@ -707,13 +707,13 @@ def batch_SMARTS():
 
     for game in games:
         for r in range(1):
-            params.append([a_squared_c_ppo_continuous, dict(game=game, run=r, tasks=False, remark='ASC-PPO', gate=nn.Tanh())])
-            params.append([a_squared_c_a2c_continuous, dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh())])
-            params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh())])
-            params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh())])
-            params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh())])
-            params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh())])
-            params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh())])
+            # params.append([a_squared_c_ppo_continuous, dict(game=game, run=r, tasks=False, remark='ASC-PPO', gate=nn.Tanh())])
+            # params.append([a_squared_c_a2c_continuous, dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh())])
+            params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh(), smarts=True)])
+            params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=True)])
+            params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=True)])
+            params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=True)])
+            params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])
 
             # params.append([a_squared_c_a2c_continuous,
             #                dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh(), num_workers=4)])

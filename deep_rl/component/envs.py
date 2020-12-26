@@ -64,7 +64,7 @@ def make_env(
                 # set headless to false if u want to use envision
                 # headless=env_headless,
                 # visdom=env_visdom,
-                # seed=42,
+                seed=42,
             )
             env = SMARTSWrapper(env, env_AGENT_ID)
             return env
@@ -161,7 +161,7 @@ class SMARTSWrapper(gym.Wrapper):
         reward = reward[self.agent_id]
 
         done = done[self.agent_id]
-        
+
         info = info[self.agent_id]
         # info在每个AGENT下的内容
         # {'env_obs': 一些全局信息， 'goal_distance': , 'score'}
