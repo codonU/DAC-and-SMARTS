@@ -35,6 +35,32 @@ Shangtong Zhang, Shimon Whiteson (NeurIPS 2019)
 
 
 
+# 运行
+
+## 运行本库
+
+运行的主文件为`template_SMARTS.py`
+
+## log
+
+### 2020.12.26
+
+目前能够在SMARTS的各种地图上跑DAC库中的各个算法
+
+**目前的代码逻辑**：
+
+DAC option库 与SMARTS库各自有训练器，但是由于DAC中实现的各算法，环境是在agent之中，更不容易改动，所以参照SMARTS中`keep_lane`的实例单独创建环境。原来创建环境只需要环境名称，现在需要额外的agent接受环境变量，agent_id等参数，所以创建了字典代替原来的单独的字符串环境名，agent_spec选择了`continuous.py`中默认的agent_spec。然后在`env.py`中新写了一个适用于SMARTS环境的包装类`SMARTSWrapper`，将返回的observation、action、done、info都对其特有的agent_id获得，返回符合gym格式的变量。
+
+但是有以下明显问题未处理：
+
+1. logger中：暂时只对SMARTS环境在logger中直接改为"SMARTS"，暂时不能区分道路与算法
+2. SMARTS道路：目前只参考`keep_lane.py`实现了单道路，只能通过config的初始化切换环境，暂时不能自动地跑过所有道路
+3. 超参：各种算法的超参都需要重新调整
+
+
+
+
+
 # 两个库的环境配置
 
 
