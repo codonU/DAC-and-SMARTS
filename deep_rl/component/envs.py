@@ -165,8 +165,10 @@ class SMARTSWrapper(gym.Wrapper):
         info = info[self.agent_id]
         # info在每个AGENT下的内容
         # {'env_obs': 一些全局信息， 'goal_distance': , 'score'}
-        # 直接将info中的score改为DAC中BaseAgent需要的'episodic_return'
-        info['episodic_return'] = info.pop('score')
+        if not done:
+            info['episodeic_return'] = None
+        else:
+            info['episodic_return'] = info.pop('score')
         return obs, reward, done, info
 
     def reset(self):
