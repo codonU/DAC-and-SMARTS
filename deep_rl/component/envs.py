@@ -166,7 +166,7 @@ class SMARTSWrapper(gym.Wrapper):
         # info在每个AGENT下的内容
         # {'env_obs': 一些全局信息， 'goal_distance': , 'score'}
         if not done:
-            info['episodeic_return'] = None
+            info['episodic_return'] = None
         else:
             info['episodic_return'] = info.pop('score')
         return obs, reward, done, info
