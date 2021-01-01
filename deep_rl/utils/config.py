@@ -79,3 +79,11 @@ class Config:
             config_dict = args.__dict__
         for key in config_dict.keys():
             setattr(self, key, config_dict[key])
+
+        # for SMARTS tag
+        # SMARTS 需要判断一下是否是SMARTS的tag（即原来设置中的game）
+        # SMARTS中的game为字典，但是转为tag还是字符串
+        if '{' in self.tag:
+            idx = self.tag.find('}')
+            self.tag = 'SMARTS' + self.tag[idx + 1:]
+            # pass

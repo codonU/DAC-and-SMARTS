@@ -709,9 +709,9 @@ def batch_SMARTS():
         for r in range(1):
             # params.append([a_squared_c_ppo_continuous, dict(game=game, run=r, tasks=False, remark='ASC-PPO', gate=nn.Tanh())])
             # params.append([a_squared_c_a2c_continuous, dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh())])
-            params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh(), smarts=True)])
-            params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=True)])
-            params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=True)])
+            # params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh(), smarts=True)])
+            # params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=True)])
+            # params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=True)])
             params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=True)])
             params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])
 
