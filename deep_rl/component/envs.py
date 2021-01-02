@@ -159,7 +159,7 @@ class SMARTSWrapper(gym.Wrapper):
         obs = self.concat_obs(origin_obs)
 
         reward = reward[self.agent_id]
-
+        print("step reward:", reward)
         done = done[self.agent_id]
 
         info = info[self.agent_id]
