@@ -407,7 +407,7 @@ def oc_continuous(**kwargs):
     kwargs.setdefault('entropy_weight', 0.01)
     kwargs.setdefault('tasks', False)
     kwargs.setdefault('max_steps', 2e6)
-    kwargs.setdefault('num_workers', 16)
+    # kwargs.setdefault('num_workers', 16)
     config = Config()
     config.merge(kwargs)
 
