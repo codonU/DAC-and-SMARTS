@@ -514,7 +514,7 @@ def reward_adapter(env_obs, env_reward):
     else:
         time_consume = -0.1
 
-    wrong_way_penalty = -10
+    wrong_way_penalty = 0
     if env_obs.events.off_route:
         wrong_way_penalty = -10
 
@@ -532,9 +532,9 @@ def reward_adapter(env_obs, env_reward):
     if intersection_crash_flag:
         crash_penalty -= 5
 
-    total_reward = np.sum([1.0 * env_reward])
-    total_penalty = np.sum([0.1 * center_penalty, 1 * crash_penalty, 1 * time_consume, wrong_way_penalty])
-    return (total_reward + total_penalty) / 200.0
+    total_reward = np.sum([1.1 * env_reward])
+    total_penalty = np.sum([3.0 * center_penalty, 1 * crash_penalty, 0.5 * time_consume, wrong_way_penalty])
+    return (total_reward + total_penalty) / 2.0
 
 
 def action_adapter(model_action):
