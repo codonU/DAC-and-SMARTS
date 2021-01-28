@@ -151,7 +151,10 @@ class SMARTSWrapper(gym.Wrapper):
         self.action_space = ACTION_SPACE
         self.env.action_space = ACTION_SPACE
         # print(self.env.action_space)
-    
+
+        # 平均速度 总里程
+        self.ave_speed = []
+
     def step(self, action):
         origin_obs, reward, done, info = self.env.step({self.agent_id: action})
 
@@ -165,11 +168,21 @@ class SMARTSWrapper(gym.Wrapper):
         info = info[self.agent_id]
         # info在每个AGENT下的内容
         # {'env_obs': 一些全局信息， 'goal_distance': , 'score'}
+
+        # 计算平均速度和总里程
+        self.ave_speed.append(info['env_obs'].ego_vehicle_state.speed)
+
         if not done:
             info['episodic_return'] = None
+            info['ave_speed'] = None
+            info['distance'] = None
         else:
             info['episodic_return'] = info.pop('score')
-            # 在这里增加记录平均速度、平均里程等信息到info
+            # 在这里增加记录平均速度、总里程等信息到info
+            info['ave_speed'] = np.average(self.ave_speed)
+            self.ave_speed = []
+            info['distance'] = info['env_obs'].distance_travelled
+
         return obs, reward, done, info
 
     def reset(self):

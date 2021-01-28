@@ -65,6 +65,16 @@ class BaseAgent:
             if ret is not None:
                 self.logger.add_scalar('episodic_return_train', ret, self.total_steps + offset)
                 self.logger.info('steps %d, episodic_return_train %s' % (self.total_steps + offset, ret))
+            # 每回合平均速度
+            ave_speed = info['ave_speed']
+            if ave_speed is not None:
+                self.logger.add_scalar('episodic_average_speed', ave_speed, self.total_steps + offset)
+                self.logger.info('steps %d, episodic_average_speed %s' % (self.total_steps + offset, ret))
+            # 每回合总里程
+            distance = info['distance']
+            if distance is not None:
+                self.logger.add_scalar('episodic_distance', distance, self.total_steps + offset)
+                self.logger.info('steps %d, episodic_distance %s' % (self.total_steps + offset, ret))
         elif isinstance(info, tuple):
             for i, info_ in enumerate(info):
                 self.record_online_return(info_, i)
