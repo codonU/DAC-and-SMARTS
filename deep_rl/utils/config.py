@@ -53,7 +53,7 @@ class Config:
         self.random_action_prob = None
         self.__eval_env = None
         self.log_interval = int(1e3)
-        self.save_interval = 100000
+        self.save_interval = 0         # 100000 一个小时多一点
         self.eval_interval = 0
         self.eval_episodes = 10
         self.async_actor = True
@@ -86,5 +86,5 @@ class Config:
         # SMARTS中的game为字典，但是转为tag还是字符串
         if '{' in self.tag:
             idx = self.tag.find('}')
-            self.tag = 'SMARTS' + self.tag[idx + 1:]
+            self.tag = 'SMARTS-' + self.smarts + self.tag[idx + 1:]
             # pass

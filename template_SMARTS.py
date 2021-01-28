@@ -686,6 +686,13 @@ def visualize_a_squared_c(**kwargs):
             pickle.dump(agent.all_options, f)
 
 
+def get_scenario_name(scennario_path):
+    """读取scenrio的名字
+    """
+    name = scennario_path[0].name
+    return name
+
+
 def batch_SMARTS():
     cf = Config()
 
@@ -725,7 +732,7 @@ def batch_SMARTS():
             # params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh(), smarts=True)])
             # params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=True)])
             # params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=True)])
-            params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=True)])
+            params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
             # params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])
 
             # params.append([a_squared_c_a2c_continuous,
