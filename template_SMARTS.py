@@ -438,8 +438,17 @@ def oc_continuous(**kwargs):
     config.state_normalizer = MeanStdNormalizer()
     config.target_network_update_freq = int(1e3)
 
+    # 跑完simple_loop
     # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_09_48
-    config.load_path = 'OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_09_48'
+    # 一半 roundabout_a , sharp报错
+    # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_15_49
+    # 6个小时 roundabou_a 只能不追车，不会减速拐弯，增大出道惩罚感觉作用不
+    # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_22_30
+    # 一晚上的 roundabout——its
+    # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_22_10_03
+    # 一下午 its/merge_a 高强度 撞车惩罚，现在已经能不错地停车了
+    # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_26_19_51
+    config.load_path = './data/OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_22_10_03'
 
     run_steps(OCAgent(config))
 
@@ -687,11 +696,11 @@ def batch_SMARTS():
         # './dataset_public/all_loop/all_loop_a'
         # './dataset_public/intersection_loop/its_a',
         # './dataset_public/merge_loop/merge_a',s
-        # './dataset_public/mixed_loop/its_merge_a',
+        './dataset_public/mixed_loop/its_merge_a',
         # './dataset_public/mixed_loop/roundabout_its_a',
         # './dataset_public/mixed_loop/roundabout_merge_a',
         # './dataset_public/roundabout_loop/roundabout_a',
-        './dataset_public/sharp_loop/sharploop_a',
+        # './dataset_public/sharp_loop/sharploop_a',
         # './dataset_public/simple_loop/simpleloop_a',
     ]
     scenario_path = [Path(path).absolute() for path in scenario_path]

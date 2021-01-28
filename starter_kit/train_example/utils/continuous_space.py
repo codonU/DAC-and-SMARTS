@@ -516,7 +516,7 @@ def reward_adapter(env_obs, env_reward):
 
     wrong_way_penalty = 0
     if env_obs.events.off_route:
-        wrong_way_penalty = -15
+        wrong_way_penalty = -80
 
     distance_from_center = get_distance_from_center(env_obs)
 
@@ -524,16 +524,16 @@ def reward_adapter(env_obs, env_reward):
 
     # penalise close proximity to lane cars
     if lane_crash_flag:
-        crash_penalty = -10
+        crash_penalty = -100
     else:
         crash_penalty = 0
 
     # penalise close proximity to intersection cars
     if intersection_crash_flag:
-        crash_penalty -= 5
+        crash_penalty -= 100
 
     total_reward = np.sum([1.1 * env_reward])
-    total_penalty = np.sum([3.0 * center_penalty, 1 * crash_penalty, 0.5 * time_consume, wrong_way_penalty])
+    total_penalty = np.sum([4.0 * center_penalty, 2.0 * crash_penalty, 0.5 * time_consume, wrong_way_penalty])
     return (total_reward + total_penalty) / 2.0
 
 

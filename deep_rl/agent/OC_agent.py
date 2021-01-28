@@ -17,12 +17,10 @@ class OCAgent(BaseAgent):
         self.task = config.eval_env
         self.network = config.network_fn()
         self.target_network = config.network_fn()
+        
         self.optimizer = config.optimizer_fn(self.network.parameters())
         self.target_network.load_state_dict(self.network.state_dict())
-        # load model
-        if config.load_path:
-            self.load(config.load_path)
-            print("读取模型")
+        
 
         self.total_steps = 0
         self.worker_index = tensor(np.arange(config.num_workers)).long()
@@ -30,6 +28,11 @@ class OCAgent(BaseAgent):
         self.states = self.config.state_normalizer(self.task.reset())
         self.is_initial_states = tensor(np.ones((config.num_workers))).byte()
         self.prev_options = self.is_initial_states.clone().long()
+
+        # load model
+        if config.load_path:
+            self.load(config.load_path)
+            print("读取模型")
 
     def sample_option(self, prediction, epsilon, prev_option, is_intial_states):
         with torch.no_grad():

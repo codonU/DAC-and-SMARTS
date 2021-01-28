@@ -169,6 +169,7 @@ class SMARTSWrapper(gym.Wrapper):
             info['episodic_return'] = None
         else:
             info['episodic_return'] = info.pop('score')
+            # 在这里增加记录平均速度、平均里程等信息到info
         return obs, reward, done, info
 
     def reset(self):
