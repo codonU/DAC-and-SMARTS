@@ -516,7 +516,7 @@ def reward_adapter(env_obs, env_reward):
 
     wrong_way_penalty = 0
     if env_obs.events.off_route:
-        wrong_way_penalty = -10
+        wrong_way_penalty = -15
 
     distance_from_center = get_distance_from_center(env_obs)
 
@@ -524,7 +524,7 @@ def reward_adapter(env_obs, env_reward):
 
     # penalise close proximity to lane cars
     if lane_crash_flag:
-        crash_penalty = -5
+        crash_penalty = -10
     else:
         crash_penalty = 0
 

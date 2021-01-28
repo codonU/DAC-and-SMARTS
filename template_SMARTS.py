@@ -437,6 +437,10 @@ def oc_continuous(**kwargs):
     config.beta_reg = 0.01
     config.state_normalizer = MeanStdNormalizer()
     config.target_network_update_freq = int(1e3)
+
+    # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_09_48
+    config.load_path = 'OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_21_09_48'
+
     run_steps(OCAgent(config))
 
 
@@ -687,8 +691,8 @@ def batch_SMARTS():
         # './dataset_public/mixed_loop/roundabout_its_a',
         # './dataset_public/mixed_loop/roundabout_merge_a',
         # './dataset_public/roundabout_loop/roundabout_a',
-        # './dataset_public/sharp_loop/sharploop_a',
-        './dataset_public/simple_loop/simpleloop_a',
+        './dataset_public/sharp_loop/sharploop_a',
+        # './dataset_public/simple_loop/simpleloop_a',
     ]
     scenario_path = [Path(path).absolute() for path in scenario_path]
 
@@ -713,7 +717,7 @@ def batch_SMARTS():
             # params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=True)])
             # params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=True)])
             params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=True)])
-            params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])
+            # params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])
 
             # params.append([a_squared_c_a2c_continuous,
             #                dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh(), num_workers=4)])

@@ -53,11 +53,12 @@ class Config:
         self.random_action_prob = None
         self.__eval_env = None
         self.log_interval = int(1e3)
-        self.save_interval = 50
+        self.save_interval = 100000
         self.eval_interval = 0
         self.eval_episodes = 10
         self.async_actor = True
         self.tasks = False
+        self.load_path = None
 
     @property
     def eval_env(self):

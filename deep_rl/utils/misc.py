@@ -20,7 +20,9 @@ def run_steps(agent):
     t0 = time.time()
     while True:
         if config.save_interval and not agent.total_steps % config.save_interval:
-            agent.save('data/%s-%s-%d' % (agent_name, config.tag, agent.total_steps))
+            # agent.save('data/%s-%s-%d' % (agent_name, config.tag, agent.total_steps))
+            agent.save('data/%s-%s-%s' % (agent_name, config.tag, time.strftime("%m_%d_%H_%M", time.localtime())))
+
         if config.log_interval and not agent.total_steps % config.log_interval:
             agent.logger.info('steps %d, %.2f steps/s' % (agent.total_steps, config.log_interval / (time.time() - t0)))
             t0 = time.time()

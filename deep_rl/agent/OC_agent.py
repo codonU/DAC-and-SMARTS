@@ -19,6 +19,10 @@ class OCAgent(BaseAgent):
         self.target_network = config.network_fn()
         self.optimizer = config.optimizer_fn(self.network.parameters())
         self.target_network.load_state_dict(self.network.state_dict())
+        # load model
+        if config.load_path:
+            self.load(config.load_path)
+            print("读取模型")
 
         self.total_steps = 0
         self.worker_index = tensor(np.arange(config.num_workers)).long()
