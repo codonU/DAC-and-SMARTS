@@ -155,6 +155,10 @@ class SMARTSWrapper(gym.Wrapper):
         # 平均速度 总里程
         self.ave_speed = []
 
+        self.test_length = 30
+        self.test_arr = np.zeros((self.test_length, 3))
+        self.test_epi = 0
+
     def step(self, action):
         origin_obs, reward, done, info = self.env.step({self.agent_id: action})
 
@@ -182,6 +186,18 @@ class SMARTSWrapper(gym.Wrapper):
             info['ave_speed'] = np.average(self.ave_speed)
             self.ave_speed = []
             info['distance'] = info['env_obs'].distance_travelled
+
+            # test record 
+            test = True
+            test = False
+            if test:
+                self.test_arr[self.test_epi, 0] = info['ave_speed']
+                self.test_arr[self.test_epi, 1] = info['distance']
+                if info['env_obs'].events.off_road or len(info['env_obs'].events.collisions):
+                    self.test_arr[self.test_epi, 2] = 1
+                self.test_epi += 1
+                if self.test_epi == self.test_length:
+                    np.save(time.strftime("%m_%d_%H_%M", time.localtime()) + '.npy', self.test_arr)
 
         return obs, reward, done, info
 
