@@ -23,6 +23,11 @@ class PPOAgent(BaseAgent):
         self.states = self.task.reset()
         self.states = config.state_normalizer(self.states)
 
+        # load model
+        if config.load_path:
+            self.load(config.load_path)
+            print("读取模型")
+
     def step(self):
         config = self.config
         storage = Storage(config.rollout_length)

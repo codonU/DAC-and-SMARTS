@@ -300,7 +300,7 @@ def a_squared_c_a2c_continuous(**kwargs):
     else:
         hidden_units = (64, 64)
 
-    config.task_fn = lambda: Task(config.game, num_envs=config.num_workers)
+    config.task_fn = lambda: Task(config.game)
     config.eval_env = Task(config.game)
 
     config.network_fn = lambda: OptionGaussianActorCriticNet(
@@ -329,7 +329,7 @@ def a2c_continuous(**kwargs):
     kwargs.setdefault('gate', nn.ReLU())
     kwargs.setdefault('tasks', False)
     kwargs.setdefault('max_steps', 2e6)
-    kwargs.setdefault('num_workers', 16)
+    # kwargs.setdefault('num_workers', 16)
 
     config = Config()
     config.merge(kwargs)
@@ -342,7 +342,7 @@ def a2c_continuous(**kwargs):
     else:
         hidden_units = (64, 64)
 
-    config.task_fn = lambda: Task(config.game, num_envs=config.num_workers)
+    config.task_fn = lambda: Task(config.game)
     config.eval_env = Task(config.game)
 
     config.optimizer_fn = lambda params: torch.optim.RMSprop(params, lr=0.0007)
@@ -394,6 +394,13 @@ def ppo_continuous(**kwargs):
     config.ppo_ratio_clip = 0.2
     config.log_interval = 2048
     config.state_normalizer = MeanStdNormalizer()
+
+    # 现有模型
+    # 一下午simple_loop
+    # PPOAgent-SMARTS-simpleloop_a-gate_Tanh()-remark_PPO-smarts_simpleloop_a-tasks_False-run-0-01_31_20_17
+    # PPOAgent-SMARTS-simpleloop_a-gate_Tanh()-remark_PPO-smarts_simpleloop_a-tasks_False-run-0-02_01_18_16
+    # PPOAgent-SMARTS-simpleloop_a-gate_Tanh()-remark_PPO-smarts_simpleloop_a-tasks_False-run-0-02_01_16_36
+    config.load_path = './data/PPOAgent-SMARTS-simpleloop_a-gate_Tanh()-remark_PPO-smarts_simpleloop_a-tasks_False-run-0-02_01_16_36'
     run_steps(PPOAgent(config))
 
 
@@ -448,7 +455,14 @@ def oc_continuous(**kwargs):
     # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_22_10_03
     # 一下午 its/merge_a 高强度 撞车惩罚，现在已经能不错地停车了
     # OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_26_19_51
-    config.load_path = './data/OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_22_10_03'
+
+    # 单次simple_loop
+    # OCAgent-SMARTS-simpleloop_a-gate_Tanh()-remark_OC-smarts_simpleloop_a-tasks_False-run-0-01_30_23_57
+    # 激进 all_loog
+    # OCAgent-SMARTS-all_loop_a-gate_Tanh()-remark_OC-smarts_all_loop_a-tasks_False-run-0-02_02_15_33
+    # 激进后保守
+    # OCAgent-SMARTS-roundabout_its_a-gate_Tanh()-remark_OC-smarts_roundabout_its_a-tasks_False-run-0-02_02_22_38
+    config.load_path = './data/OCAgent-SMARTS-gate_Tanh()-remark_OC-smarts_True-tasks_False-run-0-01_26_19_51'
 
     run_steps(OCAgent(config))
 
@@ -702,7 +716,7 @@ def batch_SMARTS():
     scenario_path = [
         # './dataset_public/all_loop/all_loop_a'
         # './dataset_public/intersection_loop/its_a',
-        # './dataset_public/merge_loop/merge_a',s
+        # './dataset_public/merge_loop/merge_a',
         # './dataset_public/mixed_loop/its_merge_a',
         # './dataset_public/mixed_loop/roundabout_its_a',
         # './dataset_public/mixed_loop/roundabout_merge_a',
@@ -731,7 +745,8 @@ def batch_SMARTS():
             params.append([ppo_continuous, dict(game=game, run=r, tasks=False, remark='PPO', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
             # params.append([a2c_continuous, dict(game=game, run=r, tasks=False, remark='A2C',gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
             # params.append([oc_continuous, dict(game=game, run=r, tasks=False, remark='OC', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
-            
+            # params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
+
             # params.append([a_squared_c_a2c_continuous, dict(game=game, run=r, tasks=False, remark='ASC-A2C', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
             # params.append([ahp_ppo_continuous, dict(game=game, run=r, tasks=False, remark='AHP', gate=nn.Tanh(), smarts=get_scenario_name(scenario_path))])
             # params.append([ppoc_continuous, dict(game=game, run=r, tasks=False, remark='PPOC', gate=nn.Tanh(), smarts=True)])

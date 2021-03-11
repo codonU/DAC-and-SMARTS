@@ -14,6 +14,7 @@ class A2CAgent(BaseAgent):
         BaseAgent.__init__(self, config)
         self.config = config
         # self.task = config.task_fn()
+        self.task = config.eval_env
         self.network = config.network_fn()
         self.optimizer = config.optimizer_fn(self.network.parameters())
         self.total_steps = 0

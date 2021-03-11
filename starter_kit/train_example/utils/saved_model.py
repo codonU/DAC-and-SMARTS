@@ -10,7 +10,7 @@ from ray.rllib.utils import try_import_tf
 
 from smarts.core.agent import AgentPolicy
 
-tf = try_import_tf()
+tf = try_import_tf()[0]
 
 
 #########################################

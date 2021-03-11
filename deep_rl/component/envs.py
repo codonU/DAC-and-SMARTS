@@ -155,7 +155,7 @@ class SMARTSWrapper(gym.Wrapper):
         # 平均速度 总里程
         self.ave_speed = []
 
-        self.test_length = 30
+        self.test_length = 20
         self.test_arr = np.zeros((self.test_length, 3))
         self.test_epi = 0
 
@@ -189,7 +189,7 @@ class SMARTSWrapper(gym.Wrapper):
 
             # test record 
             test = True
-            test = False
+            # test = False
             if test:
                 self.test_arr[self.test_epi, 0] = info['ave_speed']
                 self.test_arr[self.test_epi, 1] = info['distance']

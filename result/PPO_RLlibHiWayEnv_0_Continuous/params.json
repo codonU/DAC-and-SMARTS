@@ -1,0 +1,38 @@
+{
+  "callbacks": {
+    "on_episode_end": "<function on_episode_end at 0x7f5587d9d440>",
+    "on_episode_start": "<function on_episode_start at 0x7f5588cd0a70>",
+    "on_episode_step": "<function on_episode_step at 0x7f5588cd08c0>"
+  },
+  "clip_param": 0.2,
+  "env": "<class 'smarts.env.rllib_hiway_env.RLlibHiWayEnv'>",
+  "env_config": {
+    "agent_specs": {
+      "AGENT-007": "AgentSpec(interface=AgentInterface(debug=False, max_episode_steps=None, neighborhood_vehicles=NeighborhoodVehicles(radius=60), waypoints=Waypoints(lookahead=50), road_waypoints=False, drivable_area_grid_map=False, ogm=OGM(width=64, height=64, resolution=0.25), rgb=False, lidar=False, action=<ActionSpaceType.Continuous: 0>, obs_stack_size=1), policy_builder=None, policy_params=None, observation_adapter=<function observation_adapter at 0x7f5624181950>, action_adapter=<function action_adapter at 0x7f5624181a70>, reward_adapter=<function reward_adapter at 0x7f56241819e0>, info_adapter=<function info_adapter at 0x7f5624181b00>)"
+    },
+    "headless": true,
+    "scenarios": [
+      "/home/wangar/DAI-20/starter_kit/../dataset_public/simple_loop/simpleloop_a"
+    ],
+    "seed": 42
+  },
+  "horizon": 1000,
+  "lambda": 0.95,
+  "log_level": "WARN",
+  "lr": 0.0001,
+  "multiagent": {
+    "policies": {
+      "default_policy": [
+        null,
+        "Dict(closest_its_nv_rel_pos:Box(2,), closest_its_nv_rel_speed:Box(1,), closest_lane_nv_rel_speed:Box(1,), distance_from_center:Box(1,), heading_errors:Box(10,), intersection_distance:Box(1,), intersection_ttc:Box(1,), lane_dist:Box(5,), lane_ttc:Box(5,), speed:Box(1,), steering:Box(1,))",
+        "Box(3,)",
+        {}
+      ]
+    },
+    "policy_mapping_fn": "<function main.<locals>.<lambda> at 0x7f5587d9d5f0>"
+  },
+  "num_sgd_iter": 10,
+  "num_workers": 7,
+  "sgd_minibatch_size": 1024,
+  "train_batch_size": 30720
+}

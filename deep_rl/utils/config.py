@@ -53,7 +53,9 @@ class Config:
         self.random_action_prob = None
         self.__eval_env = None
         self.log_interval = int(1e3)
-        self.save_interval = 100000         # 100000 一个小时多一点
+        self.save_interval = 102400         # 100000 一个小时多一点
+        # 保存模型的间隔要和 rollout_length匹配
+        # 否则会超过保存节点
         self.eval_interval = 0
         self.eval_episodes = 10
         self.async_actor = True
